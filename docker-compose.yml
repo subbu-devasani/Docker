@@ -1,0 +1,52 @@
+version: '3'
+
+
+services:
+    db:
+      image: postgres:latest
+      hostname: db
+      container_name: db
+      ports:
+      - "5432:5432"
+      environment:
+        POSTGRES_USER: subbudevasani
+        POSTGRES_PASSWORD: manisubbu24697
+        POSTGRES_DB: telusko
+      networks:
+      - network
+      restart: always
+      volumes:
+      - "database:/var/lib/postgresql/data"
+
+
+    travello:
+       build:
+         context: /home/ubuntu/Docker/
+       ports:
+       - "80:8000"    
+       hostname: travello
+       container_name: travello
+       networks: 
+       - network
+       depends_on:
+       - db
+       restart: always
+
+    nginx:
+       build:
+         context: /home/ubuntu/Docker/nginx/
+       ports:
+       - "8000:80"
+       hostname: nginx
+       networks:
+       - network
+       depends_on: 
+       - travello
+       restart: always
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  database:  
